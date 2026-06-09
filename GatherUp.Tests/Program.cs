@@ -1,9 +1,10 @@
 ﻿using System;
+using System.IO;
 using GatherUp.Core.DO;
 using GatherUp.Core.Interfaces;
 using GatherUp.Infrastructure.Data;
 using GatherUp.Infrastructure.Memory;
-
+using GatherUp.Infrastructure.XML;
 
 namespace GatherUp.Tests
 {
@@ -11,13 +12,19 @@ namespace GatherUp.Tests
     {
         static void Main(string[] args)
         {
-            // הגדרה המאפשרת ל-Console להציג עברית בצורה תקינה בלי סימני שאלה
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            Console.WriteLine("=== תחילת הרצת פרויקט הבדיקה GatherUpSystem ===");
+            Console.WriteLine("=== תחילת ריצת פרויקט הבדיקה GatherUpSystem ===");
             Console.WriteLine("---------------------------------------------");
 
-            // 1. יצירת מופעים של ה-MemoryRepository (הזרקת תלויות ידנית עבור ה-Core)
+            RunXmlEngine();
+
+            Console.WriteLine("\n=== הבדיקה הסתיימה בהצלחה! לחצי Enter לסגירה ===");
+            Console.ReadLine();
+        }
+
+        static void RunMemoryEngine()
+        {
             IRepository<Event> eventRepo = new MemoryRepository<Event>();
             IRepository<Participant> participantRepo = new MemoryRepository<Participant>();
             IRepository<EventManager> managerRepo = new MemoryRepository<EventManager>();
@@ -25,64 +32,72 @@ namespace GatherUp.Tests
             IRepository<VendorAllocation> vendorRepo = new MemoryRepository<VendorAllocation>();
             IRepository<Poll> pollRepo = new MemoryRepository<Poll>();
 
-            // 2. קריאה לפונקציית האתחול עם ה-Repositories שיצרנו
-            // פעולה זו תטען למערכת את הנתונים מתוך SeedData (מנהל, בעל אירוע, 2 משתתפים, ספק וסקרים)
             Initialize.DataInit(eventRepo, participantRepo, managerRepo, hostRepo, vendorRepo, pollRepo);
-            Console.WriteLine("[V] הנתונים הראשוניים מ-SeedData הוטענו בהצלחה לזיכרון.");
-            Console.WriteLine("---------------------------------------------\n");
+        }
 
+        static void RunXmlEngine()
+        {
+            Console.WriteLine("[מנוע: XML] מריץ בדיקות כתיבה וקריאה מול הדיסק הקשיח...");
 
-            // 3. בדיקת דרישות המערכת בשטח:
+            string xmlFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataXML");
+            string receiptsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UploadedReceipts");
+            if (!Directory.Exists(xmlFolder)) Directory.CreateDirectory(xmlFolder);
+            if (!Directory.Exists(receiptsFolder)) Directory.CreateDirectory(receiptsFolder);
 
-            // --- בדיקה 1: הוספת 3 משתתפים חדשים למערכת ---
-            Console.WriteLine("--- שלב א': הוספת 3 משתתפים חדשים ---");
+            IRepository<Event> eventRepo = new XmlRepository<Event>();
+            IRepository<Participant> participantRepo = new XmlRepository<Participant>();
+            IRepository<EventManager> managerRepo = new XmlRepository<EventManager>();
+            IRepository<EventHost> hostRepo = new XmlRepository<EventHost>();
+            IRepository<VendorAllocation> vendorRepo = new XmlRepository<VendorAllocation>();
+            IRepository<Poll> pollRepo = new XmlRepository<Poll>();
 
-            var p1 = new Participant { Id = 5, Name = "דניאל גולד", Email = "daniel@example.com", IsAttending = true, HasPaid = false, AmountContributed = 0 };
-            var p2 = new Participant { Id = 6, Name = "מיכל כץ", Email = "michal@example.com", IsAttending = false, HasPaid = false, AmountContributed = 0 };
-            var p3 = new Participant { Id = 7, Name = "יונתן רז", Email = "yonatan@example.com", IsAttending = null, HasPaid = false, AmountContributed = 0 };
+            ReceiptRepository receiptRepo = new ReceiptRepository();
+
+            Initialize.DataInit(eventRepo, participantRepo, managerRepo, hostRepo, vendorRepo, pollRepo);
+            Console.WriteLine("[V] נתוני SeedData ראשוניים נכתבו לתוך קובצי ה-XML בהצלחה.");
+
+            Console.WriteLine("\n--- שלב 1: הוספת 3 משתתפים נוספים ל-XML ---");
+            var p1 = new Participant { Id = 31, Name = "נתנאל מאיר", Email = "netanel@test.com", IsAttending = true, HasPaid = true, AmountContributed = 120 };
+            var p2 = new Participant { Id = 32, Name = "אסתר לוי", Email = "esther@test.com", IsAttending = false, HasPaid = false, AmountContributed = 0 };
+            var p3 = new Participant { Id = 33, Name = "גד עובדיה", Email = "gad@test.com", IsAttending = true, HasPaid = true, AmountContributed = 180 };
 
             participantRepo.Add(p1);
             participantRepo.Add(p2);
             participantRepo.Add(p3);
 
-            Console.WriteLine("3 משתתפים נוספו בהצלחה דינמית ל-Repository.");
-            Console.WriteLine("---------------------------------------------\n");
-
-
-            // --- בדיקה 2: שליפת אחד המשתתפים לפי ה-Id שלו ---
-            int idToFind = 6;
-            Console.WriteLine($"--- שלב ב': שליפת משתתף לפי מזהה {idToFind} ---");
-
-            var searchedParticipant = participantRepo.GetById(idToFind);
-
-            if (searchedParticipant != null)
+            Console.WriteLine("\n--- שלב 2: עדכון נתונים בסקר (Poll) ---");
+            var existingPoll = pollRepo.GetById(1);
+            if (existingPoll != null)
             {
-                //Console.WriteLine($"נמצאה רשומה! שם: {searchedParticipant.Name} | מייל: {searchedParticipant.Email}");
+                existingPoll.Name = "סקר שביעות רצון מעודכן - שלב ב'";
+                pollRepo.Update(existingPoll);
+                Console.WriteLine("[V] כותרת הסקר שונתה ועודכנה בהצלחה בתוך ה-XML.");
             }
-            else
+
+            Console.WriteLine("\n--- שלב 3: הדפסת רשימת המשתתפים המלאה שנקראה מה-XML ---");
+            var allXmlParticipants = participantRepo.GetAll();
+            foreach (var participant in allXmlParticipants)
             {
-                Console.WriteLine($"שגיאה: לא נמצא משתתף עם מזהה {idToFind}");
-            }
-            Console.WriteLine("---------------------------------------------\n");
-
-
-            // --- בדיקה 3: הדפסת רשימת כל המשתתפים למסך ---
-            Console.WriteLine("--- שלב ג': הדפסת רשימת כל המשתתפים במערכת ---");
-
-            var allParticipants = participantRepo.GetAll();
-
-            foreach (var participant in allParticipants)
-            {
-                // המרת סטטוס ה-bool? למחרוזת ברורה בעברית
-                string attendanceStatus = participant.IsAttending == true ? "מגיע" :
-                                         participant.IsAttending == false ? "לא מגיע" : "טרם השיב";
-
+                string attendanceStatus = participant.IsAttending == true ? "מגיע" : participant.IsAttending == false ? "לא מגיע" : "טרם השיב";
                 Console.WriteLine($"- [ID: {participant.Id}] {participant.Name} ({participant.Email}) -> סטטוס: {attendanceStatus}");
             }
 
-            Console.WriteLine("---------------------------------------------");
-            Console.WriteLine("=== הבדיקה הסתיימה בהצלחה! לחצי Enter לסגירה ===");
-            Console.ReadLine();
+            Console.WriteLine("\n--- שלב 4: הוספת קבלה והעלאת קובץ פיזי ---");
+
+            string sourceFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "invoice_original.pdf");
+            File.WriteAllText(sourceFile, "תוכן דמי מדמה של מסמך סרוק");
+
+            var myReceipt = new ReceiptDetails("REC-998811", 550.00m, DateTime.Now);
+
+            receiptRepo.Add(myReceipt, sourceFile);
+            Console.WriteLine("[V] הקבלה נוספה ל-XML והקובץ הועלה בהצלחה לתיקיית הקבלות הייעודית.");
+
+            var checkReceipt = receiptRepo.GetByNumber("REC-998811");
+            if (checkReceipt != null)
+            {
+                string uploadedPath = receiptRepo.GetUploadedFilePath("REC-998811");
+                Console.WriteLine($"[V] אימות שליפה הצליח! נשלפה קבלה {checkReceipt.ReceiptNumber} בסך {checkReceipt.Amount}₪. קובץ שמור ב: {uploadedPath}");
+            }
         }
     }
 }

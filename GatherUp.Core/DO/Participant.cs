@@ -8,6 +8,7 @@ namespace GatherUp.Core.DO
 {
     public enum ContactPreference
     {
+        None=0,
         Email=1,
         SMS=2,
         WhatsApp=4
@@ -19,5 +20,6 @@ namespace GatherUp.Core.DO
         public bool HasPaid { get; set; }
         public decimal AmountContributed { get; set; }
         public ContactPreference ContactPreference { get; set; }
+        public Participant() { }
     }
 }

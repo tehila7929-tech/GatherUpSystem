@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace GatherUp.Core.DO
 {
     public class Person : IEntity
     {
+        [XmlAttribute]
         public int Id { get; set; }
         public required string Name { get; set; }
-        public required string Email { get; init; }
+        public required string Email { get; set; }
+        public Person() { }
     }
 }

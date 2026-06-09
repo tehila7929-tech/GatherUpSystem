@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace GatherUp.Core.DO
 {
-    public record ReceiptDetails(string ReceiptNumber, decimal Amiont, DateTime Date);
+    public record ReceiptDetails(string ReceiptNumber, decimal Amount, DateTime Date);
 }
