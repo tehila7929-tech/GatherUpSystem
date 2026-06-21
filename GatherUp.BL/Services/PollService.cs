@@ -1,4 +1,5 @@
 using GatherUp.Core.DO;
+using GatherUp.Core.Exceptions;
 using GatherUp.Core.Interfaces;
 
 namespace GatherUp.BL.Services
@@ -18,7 +19,7 @@ namespace GatherUp.BL.Services
 
         public void CreatePoll(Poll poll, int eventId)
         {
-            var ev = _events.GetById(eventId) ?? throw new InvalidOperationException("The event is undefined.");
+            var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
             _polls.Add(poll);
             ev.PollIds.Add(poll.Id);
             _events.Update(ev);
@@ -27,16 +28,16 @@ namespace GatherUp.BL.Services
 
         public void AddQuestion(int pollId, PollQuestion question)
         {
-            var poll = _polls.GetById(pollId) ?? throw new InvalidOperationException("The poll is undefined.");
+            var poll = _polls.GetById(pollId) ?? throw new NotFoundException("Poll not found.");
             poll.Questions.Add(question);
             _polls.Update(poll);
         }
 
         public void SubmitAnswer(int pollId, int questionId, int participantId, string answer)
         {
-            var poll = _polls.GetById(pollId) ?? throw new InvalidOperationException("The poll is undefined.");
+            var poll = _polls.GetById(pollId) ?? throw new NotFoundException("Poll not found.");
             var question = poll.Questions.FirstOrDefault(q => q.Id == questionId)
-                ?? throw new InvalidOperationException("The question is undefined.");
+                ?? throw new NotFoundException("Question not found.");
 
             question.SetAnswer(participantId, answer);
             _polls.Update(poll);
@@ -44,7 +45,7 @@ namespace GatherUp.BL.Services
 
         public (Poll poll, Dictionary<int, Dictionary<string, double>> resultsByQuestion) GetPollResults(int pollId)
         {
-            var poll = _polls.GetById(pollId) ?? throw new InvalidOperationException("The poll is undefined.");
+            var poll = _polls.GetById(pollId) ?? throw new NotFoundException("Poll not found.");
 
             var results = poll.Questions.ToDictionary(
                 q => q.Id,

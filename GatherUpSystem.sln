@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherUp.Tests", "GatherUp.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherUp.BL", "GatherUp.BL\GatherUp.BL.csproj", "{1772ACCD-A857-4D02-99DA-6838F9B51466}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherUp.API", "GatherUp.API\GatherUp.API.csproj", "{F4EBB853-1BBA-4469-8677-3F744DE3F9C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{1772ACCD-A857-4D02-99DA-6838F9B51466}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1772ACCD-A857-4D02-99DA-6838F9B51466}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1772ACCD-A857-4D02-99DA-6838F9B51466}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4EBB853-1BBA-4469-8677-3F744DE3F9C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4EBB853-1BBA-4469-8677-3F744DE3F9C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4EBB853-1BBA-4469-8677-3F744DE3F9C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4EBB853-1BBA-4469-8677-3F744DE3F9C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
 using GatherUp.Core.DO;
+using GatherUp.Core.Exceptions;
 using GatherUp.Core.Interfaces;
 
 namespace GatherUp.BL.Services
@@ -18,27 +19,28 @@ namespace GatherUp.BL.Services
 
         public void AddVendor(VendorAllocation vendor, int eventId)
         {
-            var ev = _events.GetById(eventId) ?? throw new InvalidOperationException("Event not found.");
+            var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
+            _vendors.Add(vendor);
             ev.VendorIds.Add(vendor.Id);
             _events.Update(ev);
         }
 
         public void AddVendorDebt(int vendorId, decimal amount)
         {
-            var vendor = _vendors.GetById(vendorId) ?? throw new InvalidOperationException("Vendor not found.");
+            var vendor = _vendors.GetById(vendorId) ?? throw new NotFoundException("Vendor not found.");
             vendor.AmountOwed += amount;
             _vendors.Update(vendor);
         }
 
         public IEnumerable<VendorAllocation> GetEventVendors(int eventId)
         {
-            var ev = _events.GetById(eventId) ?? throw new InvalidOperationException("Event not found.");
+            var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
             return _vendors.GetAll().Where(v => ev.VendorIds.Contains(v.Id));
         }
 
         public (IEnumerable<Participant> paidParticipants, decimal totalIn, IEnumerable<VendorAllocation> vendors, decimal totalOut, decimal balance) GetFinancialSummary(int eventId)
         {
-            var ev = _events.GetById(eventId) ?? throw new InvalidOperationException("Event not found.");
+            var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
 
             var paidParticipants = GetPaidParticipants(eventId);
             decimal totalIn = CalcTotalIn(paidParticipants);

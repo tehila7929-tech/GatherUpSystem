@@ -111,6 +111,10 @@ namespace GatherUp.Tests
             IRepository<Poll> pollRepo = new XmlRepository<Poll>(xmlFolder);
             ReceiptRepository receiptRepo = new ReceiptRepository(xmlFolder);
 
+            // Clear XML files before seeding to avoid duplicates on re-run
+            foreach (var file in Directory.GetFiles(xmlFolder, "*.xml"))
+                File.Delete(file);
+
             Initialize.DataInit(eventRepo, participantRepo, managerRepo, hostRepo, vendorRepo, pollRepo);
             Console.WriteLine("[V] Initial SeedData written to XML files successfully.");
 

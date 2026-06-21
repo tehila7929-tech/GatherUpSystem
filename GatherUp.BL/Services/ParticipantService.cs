@@ -1,4 +1,5 @@
 using GatherUp.Core.DO;
+using GatherUp.Core.Exceptions;
 using GatherUp.Core.Interfaces;
 
 namespace GatherUp.BL.Services
@@ -18,10 +19,10 @@ namespace GatherUp.BL.Services
 
         public void AddParticipantToEvent(Participant participant, int eventId)
         {
-            var ev = _events.GetById(eventId) ?? throw new InvalidOperationException("Event not found.");
+            var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
 
             if (ev.ParticipantIds.Contains(participant.Id))
-                throw new InvalidOperationException("Participant is already registered for this event.");
+                throw new AlreadyExistsException("Participant is already registered for this event.");
 
             _participants.Add(participant);
             ev.ParticipantIds.Add(participant.Id);
@@ -30,7 +31,7 @@ namespace GatherUp.BL.Services
 
         public void ConfirmAttendance(int participantId, bool isAttending)
         {
-            var participant = _participants.GetById(participantId) ?? throw new InvalidOperationException("Participant not found.");
+            var participant = _participants.GetById(participantId) ?? throw new NotFoundException("Participant not found.");
             participant.IsAttending = isAttending;
             _participants.Update(participant);
             if (isAttending) _notifier.RaiseAttendanceConfirmed(participantId);
@@ -38,18 +39,18 @@ namespace GatherUp.BL.Services
 
         public IEnumerable<Participant> GetEventParticipants(int eventId)
         {
-            var ev = _events.GetById(eventId) ?? throw new InvalidOperationException("Event not found.");
+            var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
             return _participants.GetAll().Where(p => ev.ParticipantIds.Contains(p.Id));
         }
 
         public Participant GetParticipant(int participantId)
         {
-            return _participants.GetById(participantId) ?? throw new InvalidOperationException("Participant not found.");
+            return _participants.GetById(participantId) ?? throw new NotFoundException("Participant not found.");
         }
 
         public void ConfirmPayment(int participantId, decimal amount)
         {
-            var participant = _participants.GetById(participantId) ?? throw new InvalidOperationException("Participant not found.");
+            var participant = _participants.GetById(participantId) ?? throw new NotFoundException("Participant not found.");
             participant.HasPaid = true;
             participant.AmountContributed = amount;
             _participants.Update(participant);
@@ -58,7 +59,7 @@ namespace GatherUp.BL.Services
 
         public IEnumerable<Participant> GetPendingParticipants(int eventId)
         {
-            var ev = _events.GetById(eventId) ?? throw new InvalidOperationException("Event not found.");
+            var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
             return _participants.GetAll().Where(p => ev.ParticipantIds.Contains(p.Id) && p.IsAttending == null);
         }
     }

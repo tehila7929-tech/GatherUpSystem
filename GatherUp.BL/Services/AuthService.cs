@@ -1,4 +1,5 @@
 using GatherUp.Core.DO;
+using GatherUp.Core.Exceptions;
 using GatherUp.Core.Interfaces;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace GatherUp.BL.Services
                        ?? (Person)_hosts.GetAll().FirstOrDefault(p => p.Email == email && p.PasswordId == passwordId);
 
             if (user == null)
-                throw new UnauthorizedAccessException("Invalid email or ID.");
+                throw new ForbiddenException("Invalid email or ID.");
 
             return user;
         }
@@ -36,7 +37,7 @@ namespace GatherUp.BL.Services
                        || _hosts.GetAll().Any(p => p.Email == email);
 
             if (exists)
-                throw new InvalidOperationException("A user with this email already exists.");
+                throw new AlreadyExistsException("A user with this email already exists.");
 
             int newId = _participants.GetAll().Any()
                 ? _participants.GetAll().Max(p => p.Id) + 1

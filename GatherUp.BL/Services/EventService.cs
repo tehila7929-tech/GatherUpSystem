@@ -1,5 +1,6 @@
-using GatherUp.Core.Interfaces;
 using GatherUp.Core.DO;
+using GatherUp.Core.Exceptions;
+using GatherUp.Core.Interfaces;
 
 namespace GatherUp.BL.Services
 {
@@ -19,10 +20,15 @@ namespace GatherUp.BL.Services
             _events.Add(newEvent);
         }
 
+        public Event GetById(int eventId)
+        {
+            return _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
+        }
+
         public void UpdateEventDetails(Event updatedEvent)
         {
             if (_events.GetById(updatedEvent.Id) == null)
-                throw new InvalidOperationException("Event not found.");
+                throw new NotFoundException("Event not found.");
             _events.Update(updatedEvent);
             _notifier.RaiseEventUpdated(updatedEvent.Id);
         }
