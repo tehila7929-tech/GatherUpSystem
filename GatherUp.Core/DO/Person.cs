@@ -12,8 +12,9 @@ namespace GatherUp.Core.DO
     {
         [XmlAttribute]
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public required string Email { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PasswordId { get; set; }
         public Person() { }
     }
 }

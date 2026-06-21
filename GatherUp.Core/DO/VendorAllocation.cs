@@ -1,9 +1,5 @@
-﻿using GatherUp.Core.Interfaces;
-using System;
+using GatherUp.Core.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace GatherUp.Core.DO
@@ -12,7 +8,7 @@ namespace GatherUp.Core.DO
     {
         [XmlAttribute]
         public int Id { get; set; }
-        public required string Name { get; set; }
+        public string Name { get; set; }
         public decimal AmountOwed { get; set; }
         public bool HasReceipt { get; set; }
         [XmlIgnore]

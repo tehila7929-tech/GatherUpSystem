@@ -17,20 +17,22 @@ namespace GatherUp.Infrastructure.Data
         {
             Id = 1,
             Name = "Tiferet Aaroni",
-            Email = "t7187325@gmail.com"
+            Email = "t7187325@gmail.com",
+            PasswordId = "123456789"
         };
 
         public static EventHost Host => new EventHost
         {
             Id = 2,
             Name = "Tehila Goldshmidt",
-            Email = "tehila7929@gmail.com"
+            Email = "tehila7929@gmail.com",
+            PasswordId = "987654321"
         };
 
         public static List<Participant> Participants => new List<Participant>
         {
-            new Participant { Id = 3, Name = "אברהם לוי", Email = "avi@gmail.com", IsAttending = true, HasPaid = true, AmountContributed = 150 },
-            new Participant { Id = 4, Name = "שרה רבקה", Email = "sara@gmail.com", IsAttending = null, HasPaid = false, AmountContributed = 0 }
+            new Participant { Id = 3, Name = "אברהם לוי", Email = "avi@gmail.com", PasswordId = "111111111", IsAttending = true, HasPaid = true, AmountContributed = 150 },
+            new Participant { Id = 4, Name = "שרה רבקה", Email = "sara@gmail.com", PasswordId = "222222222", IsAttending = null, HasPaid = false, AmountContributed = 0 }
         };
 
         public static VendorAllocation Vendor => new VendorAllocation
