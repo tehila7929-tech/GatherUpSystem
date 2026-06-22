@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GatherUp – Dashboard</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;min-height:100vh}
+    header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:18px 32px;display:flex;align-items:center;justify-content:space-between}
+    header h1{font-size:1.5rem;font-weight:800}
+    header .user-info{font-size:.9rem;opacity:.85}
+    header button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.85rem}
+    .container{max-width:1100px;margin:32px auto;padding:0 24px}
+    h2{color:#444;margin-bottom:16px;font-size:1.2rem}
+    .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+    .event-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.08);cursor:pointer;transition:transform .2s,box-shadow .2s;border-left:5px solid #764ba2}
+    .event-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+    .event-card h3{font-size:1.1rem;color:#333;margin-bottom:8px}
+    .event-card p{color:#777;font-size:.85rem;margin-bottom:4px}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;margin-top:10px}
+    .badge.Manager{background:#e9d8fd;color:#6b46c1}
+    .badge.Host{background:#feebc8;color:#c05621}
+    .badge.Participant{background:#c6f6d5;color:#276749}
+    .new-event-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:13px 28px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:24px;transition:opacity .2s}
+    .new-event-btn:hover{opacity:.9}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:100}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:14px;padding:36px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+    .modal h3{font-size:1.3rem;color:#333;margin-bottom:22px}
+    .form-group{margin-bottom:16px}
+    label{display:block;font-size:.85rem;color:#555;margin-bottom:5px;font-weight:600}
+    input,textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:.95rem;outline:none}
+    input:focus,textarea:focus{border-color:#764ba2}
+    .modal-actions{display:flex;gap:12px;margin-top:8px}
+    .btn-primary{flex:1;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+    .btn-cancel{flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+    .empty{text-align:center;color:#aaa;padding:40px;font-size:1rem}
+    .err{color:#c53030;font-size:.85rem;margin-top:8px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>🎉 GatherUp</h1>
+  <div class="user-info">Welcome, <strong id="userName"></strong></div>
+  <button onclick="logout()">Sign Out</button>
+</header>
+
+<div class="container">
+  <button class="new-event-btn" onclick="openModal()">＋ Create New Event</button>
+  <h2>📅 Your Events</h2>
+  <div class="events-grid" id="eventsGrid"><div class="empty">Loading events…</div></div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>✨ Create New Event</h3>
+    <div class="form-group"><label>Event Name *</label><input type="text" id="newName" placeholder="e.g. End of Year Party" /></div>
+    <div class="form-group"><label>Description</label><textarea id="newDesc" rows="2" placeholder="Brief description…"></textarea></div>
+    <div class="form-group"><label>Location</label><input type="text" id="newLocation" placeholder="e.g. Tel Aviv" /></div>
+    <div class="form-group"><label>Host User ID (optional)</label><input type="number" id="newHostId" placeholder="Host's user ID" /></div>
+    <div class="err" id="createErr"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="createEvent()">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API    = '';
+const token  = localStorage.getItem('token');
+const userId = parseInt(localStorage.getItem('userId'));
+const name   = localStorage.getItem('name');
+
+if (!token) { window.location.href = 'index.html'; }
+
+document.getElementById('userName').textContent = name || 'User';
+
+const H = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+async function loadEvents() {
+  const grid = document.getElementById('eventsGrid');
+  try {
+    const res  = await fetch(`${API}/api/Events/mine`, { headers: H });
+    const data = await res.json();
+    if (!res.ok) { grid.innerHTML = `<div class="empty">Error: ${data.error||'Unknown'}</div>`; return; }
+    if (!data || data.length === 0) { grid.innerHTML = '<div class="empty">No events yet. Create one!</div>'; return; }
+    grid.innerHTML = '';
+    data.forEach(item => {
+      const ev   = item.event;
+      const role = item.role; // "Manager" | "Host" | "Participant"
+      const card = document.createElement('div');
+      card.className = 'event-card';
+      card.innerHTML = `
+        <h3>${ev.name || 'Untitled'}</h3>
+        <p>📍 ${ev.location || 'TBD'}</p>
+        <p>👥 ${(ev.participantIds||[]).length} participant(s)</p>
+        <span class="badge ${role}">${role}</span>`;
+      card.onclick = () => { window.location.href = `event.html?id=${ev.id}&role=${encodeURIComponent(role)}`; };
+      grid.appendChild(card);
+    });
+  } catch(e) {
+    grid.innerHTML = '<div class="empty">Failed to load events. Is the server running?</div>';
+  }
+}
+
+function openModal()  { document.getElementById('modal').classList.add('open'); document.getElementById('createErr').textContent=''; }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+async function createEvent() {
+  const nameVal = document.getElementById('newName').value.trim();
+  const errEl   = document.getElementById('createErr');
+  if (!nameVal) { errEl.textContent = 'Event name is required.'; return; }
+  errEl.textContent = '';
+
+  // Send id=0 — server will assign a proper unique ID
+  const body = {
+    id:            0,
+    name:          nameVal,
+    description:   document.getElementById('newDesc').value.trim(),
+    location:      document.getElementById('newLocation').value.trim(),
+    managerId:     userId,
+    hostId:        parseInt(document.getElementById('newHostId').value) || 0,
+    participantIds:[], vendorIds:[], pollIds:[]
+  };
+
+  try {
+    const res = await fetch(`${API}/api/Events`, { method:'POST', headers:H, body:JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Failed to create event'; return; }
+    closeModal();
+    ['newName','newDesc','newLocation','newHostId'].forEach(id => document.getElementById(id).value = '');
+    loadEvents();
+  } catch(e) {
+    errEl.textContent = 'Network error. Please try again.';
+  }
+}
+
+function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+loadEvents();
+</script>
+</body>
+</html>

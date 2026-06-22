@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>GatherUp – Event</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f0f2f5}
+    header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:16px 32px;display:flex;align-items:center;gap:16px}
+    header h1{font-size:1.3rem;font-weight:800;flex:1}
+    header a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;white-space:nowrap}
+    .container{max-width:1000px;margin:28px auto;padding:0 24px}
+    .event-header{background:#fff;border-radius:12px;padding:24px 28px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:20px}
+    .event-header h2{font-size:1.5rem;color:#333}
+    .event-header p{color:#777;margin-top:4px;font-size:.9rem}
+    .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:700;margin-top:8px}
+    .badge.Manager{background:#e9d8fd;color:#6b46c1}
+    .badge.Host{background:#feebc8;color:#c05621}
+    .badge.Participant{background:#c6f6d5;color:#276749}
+    .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:9px 18px;border-radius:8px;border:none;background:#fff;color:#555;font-weight:600;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.08);transition:all .2s}
+    .tab-btn.active{background:#764ba2;color:#fff}
+    .section{display:none}
+    .section.active{display:block}
+    .card{background:#fff;border-radius:12px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:18px}
+    .card h3{color:#444;margin-bottom:14px;font-size:1rem}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:9px 12px;text-align:left;border-bottom:1px solid #f0f0f0;font-size:.88rem}
+    th{background:#f8f8f8;color:#666;font-weight:600}
+    .form-group{margin-bottom:12px}
+    label{display:block;font-size:.82rem;color:#555;margin-bottom:3px;font-weight:600}
+    input,textarea,select{width:100%;padding:8px 11px;border:1px solid #ddd;border-radius:7px;font-size:.9rem;outline:none}
+    input:focus,textarea:focus{border-color:#764ba2}
+    .btn{padding:8px 18px;border-radius:7px;border:none;font-weight:700;cursor:pointer;font-size:.85rem;margin-right:6px;margin-bottom:6px;transition:opacity .2s}
+    .btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+    .btn-primary:hover{opacity:.9}
+    .btn-success{background:#c6f6d5;color:#276749}
+    .btn-danger{background:#fed7d7;color:#c53030}
+    .btn-sm{padding:5px 11px;font-size:.78rem}
+    .poll-bar{background:#e9d8fd;border-radius:20px;height:9px;margin-top:3px}
+    .poll-bar-fill{background:#764ba2;height:100%;border-radius:20px;transition:width .4s}
+    .empty{color:#aaa;text-align:center;padding:20px}
+    .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0;text-align:center}
+    .summary-box{border-radius:10px;padding:16px}
+    .green{color:#276749} .red{color:#c53030} .blue{color:#2b6cb0}
+    .err{color:#c53030;font-size:.82rem;margin-top:6px}
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="dashboard.html">← Back</a>
+  <h1 id="eventTitle">Loading…</h1>
+  <span id="roleBadge" class="badge"></span>
+</header>
+
+<div class="container">
+
+  <!-- Event info + edit (manager only) -->
+  <div class="event-header">
+    <h2 id="eventName">—</h2>
+    <p id="eventDesc"></p>
+    <p id="eventLocation" style="margin-top:5px;color:#764ba2;font-weight:600"></p>
+    <div id="editEventArea" style="display:none;margin-top:14px;border-top:1px solid #f0f0f0;padding-top:14px">
+      <h3 style="font-size:.95rem;color:#444;margin-bottom:10px">✏️ Edit Event Details</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Name</label><input id="editName" type="text"/></div>
+        <div class="form-group"><label>Location</label><input id="editLocation" type="text"/></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="editDesc" rows="2"></textarea></div>
+      <button class="btn btn-primary" onclick="saveEvent()">💾 Save Changes</button>
+      <span class="err" id="editErr"></span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('tParticipants',this)">👥 Participants</button>
+    <button class="tab-btn"        onclick="showTab('tPolls',this)">📊 Polls</button>
+    <button class="tab-btn" id="tabFinance" onclick="showTab('tFinance',this)">💰 Finance</button>
+  </div>
+
+  <!-- ══ PARTICIPANTS ══ -->
+  <div class="section active" id="tParticipants">
+
+    <!-- Participant: RSVP -->
+    <div class="card" id="rsvpCard" style="display:none">
+      <h3>My RSVP</h3>
+      <button class="btn btn-success" onclick="confirmAttendance(true)">✅ I'm attending</button>
+      <button class="btn btn-danger"  onclick="confirmAttendance(false)">❌ Can't make it</button>
+    </div>
+
+    <!-- Manager: actions -->
+    <div class="card" id="managerCard" style="display:none">
+      <h3>Manager Actions</h3>
+      <button class="btn btn-primary" onclick="sendInvitations()">📧 Send Invitations</button>
+      <button class="btn btn-primary" onclick="sendReminders()">⏰ Payment Reminders</button>
+      <button class="btn btn-primary" onclick="toggle('addPForm')">➕ Add Participant</button>
+      <div id="addPForm" style="display:none;margin-top:14px;border-top:1px solid #f0f0f0;padding-top:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group"><label>User ID *</label><input type="number" id="pId"/></div>
+          <div class="form-group"><label>Name *</label><input type="text" id="pName"/></div>
+          <div class="form-group"><label>Email *</label><input type="email" id="pEmail"/></div>
+          <div class="form-group"><label>Password (ID number) *</label><input type="text" id="pPass"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="addParticipant()">Add</button>
+        <span class="err" id="addPErr"></span>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="card">
+      <h3>Participants List</h3>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Attending</th><th>Paid</th><th>Amount</th><th id="actCol"></th></tr></thead>
+        <tbody id="pTable"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ POLLS ══ -->
+  <div class="section" id="tPolls">
+
+    <!-- Manager: create poll -->
+    <div class="card" id="createPollCard" style="display:none">
+      <h3>➕ Create New Poll</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Poll Name *</label><input type="text" id="pollName"/></div>
+        <div class="form-group"><label>Description</label><input type="text" id="pollDesc"/></div>
+      </div>
+      <button class="btn btn-primary" onclick="createPoll()">Create Poll</button>
+      <span class="err" id="pollErr"></span>
+    </div>
+
+    <div id="pollsList"></div>
+  </div>
+
+  <!-- ══ FINANCE ══ -->
+  <div class="section" id="tFinance">
+    <div class="card" id="financeSummary"><div class="empty">Loading…</div></div>
+
+    <div class="card">
+      <h3>➕ Add Vendor</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div class="form-group"><label>ID *</label><input type="number" id="vId"/></div>
+        <div class="form-group"><label>Name *</label><input type="text" id="vName"/></div>
+        <div class="form-group"><label>Amount Owed ₪ *</label><input type="number" id="vAmount"/></div>
+      </div>
+      <button class="btn btn-primary" onclick="addVendor()">Add Vendor</button>
+      <span class="err" id="vendorErr"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API     = '';
+const token   = localStorage.getItem('token');
+const userId  = parseInt(localStorage.getItem('userId'));
+const params  = new URLSearchParams(location.search);
+const eventId = parseInt(params.get('id'));
+const role    = params.get('role') || 'Participant'; // "Manager"|"Host"|"Participant"
+const H       = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+if (!token || isNaN(eventId)) window.location.href = 'index.html';
+
+// ── Role badge ────────────────────────────────────────────────────────────────
+const badge = document.getElementById('roleBadge');
+badge.textContent = role;
+badge.className   = `badge ${role}`;
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+let currentEvent = null;
+
+async function init() {
+  const res = await fetch(`${API}/api/Events/${eventId}`, { headers: H });
+  if (!res.ok) { alert('Failed to load event'); return; }
+  currentEvent = await res.json();
+
+  document.getElementById('eventTitle').textContent    = currentEvent.name;
+  document.getElementById('eventName').textContent     = currentEvent.name;
+  document.getElementById('eventDesc').textContent     = currentEvent.description || '';
+  document.getElementById('eventLocation').textContent = currentEvent.location ? `📍 ${currentEvent.location}` : '';
+
+  if (role === 'Manager') {
+    document.getElementById('managerCard').style.display    = 'block';
+    document.getElementById('createPollCard').style.display = 'block';
+    document.getElementById('editEventArea').style.display  = 'block';
+    document.getElementById('actCol').textContent           = 'Actions';
+    // Pre-fill edit fields
+    document.getElementById('editName').value     = currentEvent.name;
+    document.getElementById('editLocation').value = currentEvent.location || '';
+    document.getElementById('editDesc').value     = currentEvent.description || '';
+  } else {
+    document.getElementById('tabFinance').style.display = 'none';
+  }
+
+  if (role === 'Participant') {
+    document.getElementById('rsvpCard').style.display = 'block';
+  }
+
+  loadParticipants();
+  loadPolls();
+  if (role === 'Manager') loadFinance();
+}
+
+// ── Edit event ────────────────────────────────────────────────────────────────
+async function saveEvent() {
+  const updated = {
+    ...currentEvent,
+    name:        document.getElementById('editName').value.trim(),
+    location:    document.getElementById('editLocation').value.trim(),
+    description: document.getElementById('editDesc').value.trim()
+  };
+  if (!updated.name) { document.getElementById('editErr').textContent = 'Name is required'; return; }
+  const res = await fetch(`${API}/api/Events`, { method:'PUT', headers:H, body:JSON.stringify(updated) });
+  if (res.ok) {
+    document.getElementById('editErr').textContent = '';
+    currentEvent = updated;
+    document.getElementById('eventName').textContent     = updated.name;
+    document.getElementById('eventTitle').textContent    = updated.name;
+    document.getElementById('eventDesc').textContent     = updated.description;
+    document.getElementById('eventLocation').textContent = updated.location ? `📍 ${updated.location}` : '';
+    alert('Event updated ✅');
+  } else {
+    const d = await res.json();
+    document.getElementById('editErr').textContent = d.error || 'Failed to save';
+  }
+}
+
+// ── Participants ──────────────────────────────────────────────────────────────
+async function loadParticipants() {
+  const res  = await fetch(`${API}/api/Participants/event/${eventId}`, { headers: H });
+  if (!res.ok) return;
+  const data = await res.json();
+  const tbody = document.getElementById('pTable');
+  if (!data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">No participants yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(p => {
+    const att = p.isAttending === true  ? '✅ Yes'
+              : p.isAttending === false ? '❌ No'
+              :                          '⏳ Pending';
+    const action = role === 'Manager' && !p.hasPaid
+      ? `<button class="btn btn-success btn-sm" onclick="markPaid(${p.id})">Mark Paid</button>`
+      : '';
+    return `<tr>
+      <td>${p.name}</td>
+      <td style="color:#888;font-size:.8rem">${p.email||''}</td>
+      <td>${att}</td>
+      <td>${p.hasPaid ? '✅' : '❌'}</td>
+      <td>₪${p.amountContributed ?? 0}</td>
+      <td>${action}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function confirmAttendance(val) {
+  const res = await fetch(`${API}/api/Participants/${userId}/attendance?isAttending=${val}`, { method:'PUT', headers:H });
+  if (res.ok) loadParticipants();
+  else { const d = await res.json(); alert(d.error || 'Failed'); }
+}
+
+async function markPaid(pId) {
+  const amt = prompt('Amount paid (₪):');
+  if (!amt || isNaN(amt)) return;
+  const res = await fetch(`${API}/api/Participants/${pId}/payment?amount=${amt}&eventId=${eventId}`, { method:'PUT', headers:H });
+  if (res.ok) loadParticipants();
+  else { const d = await res.json(); alert(d.error || 'Failed'); }
+}
+
+async function addParticipant() {
+  const idVal = parseInt(document.getElementById('pId').value);
+  const nm    = document.getElementById('pName').value.trim();
+  const em    = document.getElementById('pEmail').value.trim();
+  const pw    = document.getElementById('pPass').value.trim();
+  const errEl = document.getElementById('addPErr');
+  if (!idVal || !nm || !em || !pw) { errEl.textContent = 'All fields are required'; return; }
+  const p = { id:idVal, name:nm, email:em, passwordId:pw, isAttending:null, hasPaid:false, amountContributed:0, contactPreference:0 };
+  const res = await fetch(`${API}/api/Participants/event/${eventId}`, { method:'POST', headers:H, body:JSON.stringify(p) });
+  if (res.ok) {
+    errEl.textContent = '';
+    ['pId','pName','pEmail','pPass'].forEach(id => document.getElementById(id).value = '');
+    toggle('addPForm');
+    loadParticipants();
+  } else { const d = await res.json(); errEl.textContent = d.error || 'Failed'; }
+}
+
+async function sendInvitations() {
+  const desc = prompt('Event description for invitation:') || '';
+  const bank = prompt('Bank transfer details:') || '';
+  const res  = await fetch(`${API}/api/Participants/event/${eventId}/invite?eventDescription=${encodeURIComponent(desc)}&bankDetails=${encodeURIComponent(bank)}`, { method:'POST', headers:H });
+  alert(res.ok ? '📧 Invitations sent!' : 'Failed to send invitations');
+}
+
+async function sendReminders() {
+  const bank = prompt('Bank transfer details:') || '';
+  const res  = await fetch(`${API}/api/Participants/event/${eventId}/remind-payment?bankDetails=${encodeURIComponent(bank)}`, { method:'POST', headers:H });
+  alert(res.ok ? '⏰ Reminders sent!' : 'Failed');
+}
+
+// ── Polls ─────────────────────────────────────────────────────────────────────
+async function loadPolls() {
+  const evRes = await fetch(`${API}/api/Events/${eventId}`, { headers: H });
+  if (!evRes.ok) return;
+  const ev  = await evRes.json();
+  const box = document.getElementById('pollsList');
+  box.innerHTML = '';
+
+  if (!ev.pollIds || ev.pollIds.length === 0) {
+    box.innerHTML = '<div class="card"><div class="empty">No polls yet.</div></div>';
+    return;
+  }
+
+  for (const pid of ev.pollIds) {
+    const pr = await fetch(`${API}/api/Polls/${pid}/results`, { headers: H });
+    if (!pr.ok) continue;
+    const { poll, results } = await pr.json();
+
+    let html = `<div class="card">
+      <h3>📊 ${poll.name}</h3>
+      <p style="color:#888;font-size:.82rem;margin-bottom:12px">${poll.description||''}</p>`;
+
+    for (const q of poll.questions) {
+      html += `<div style="margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f5f5f5">
+        <strong style="font-size:.9rem">${q.questionText}</strong>`;
+
+      // Results bars — visible to all
+      for (const opt of q.options) {
+        const pct = results[q.id]?.[opt] ?? 0;
+        html += `<div style="margin-top:7px;font-size:.82rem">
+          ${opt} — <strong>${pct}%</strong>
+          <div class="poll-bar"><div class="poll-bar-fill" style="width:${pct}%"></div></div>
+        </div>`;
+      }
+
+      // Vote buttons — Participants only
+      if (role === 'Participant') {
+        html += `<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+          <span style="font-size:.78rem;color:#888;align-self:center">Your vote:</span>`;
+        for (const opt of q.options) {
+          const safe = opt.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+          html += `<button class="btn btn-primary btn-sm" onclick="vote(${poll.id},${q.id},'${safe}')">${opt}</button>`;
+        }
+        html += `</div>`;
+      }
+
+      // Add question — Manager only
+      if (role === 'Manager') {
+        html += `<div style="margin-top:10px">
+          <button class="btn btn-sm" style="background:#f0f0f0;color:#555" onclick="toggle('aq${poll.id}_${q.id}')">➕ Add Question to Poll</button>
+          <div id="aq${poll.id}_${q.id}" style="display:none;margin-top:8px">
+            <div class="form-group"><label>Question</label><input type="text" id="qt${poll.id}"/></div>
+            <div class="form-group"><label>Options (comma separated)</label><input type="text" id="qo${poll.id}" placeholder="Option A, Option B"/></div>
+            <button class="btn btn-primary btn-sm" onclick="addQuestion(${poll.id})">Add</button>
+          </div>
+        </div>`;
+      }
+
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+    box.innerHTML += html;
+  }
+}
+
+async function vote(pollId, questionId, answer) {
+  const res = await fetch(
+    `${API}/api/Polls/${pollId}/answer?questionId=${questionId}&participantId=${userId}&answer=${encodeURIComponent(answer)}`,
+    { method:'POST', headers:H });
+  if (res.ok || res.status === 204) loadPolls();
+  else { const d = await res.json(); alert(d.error || 'Failed to vote'); }
+}
+
+async function createPoll() {
+  const nm  = document.getElementById('pollName').value.trim();
+  const err = document.getElementById('pollErr');
+  if (!nm) { err.textContent = 'Poll name is required'; return; }
+  err.textContent = '';
+  const poll = { id: Math.floor(Date.now()/1000) % 1000000, name: nm, description: document.getElementById('pollDesc').value.trim(), questions: [] };
+  const res = await fetch(`${API}/api/Polls/event/${eventId}`, { method:'POST', headers:H, body:JSON.stringify(poll) });
+  if (res.ok) {
+    document.getElementById('pollName').value = '';
+    document.getElementById('pollDesc').value = '';
+    loadPolls();
+  } else { const d = await res.json(); err.textContent = d.error || 'Failed'; }
+}
+
+async function addQuestion(pollId) {
+  const txt  = document.getElementById(`qt${pollId}`).value.trim();
+  const opts = document.getElementById(`qo${pollId}`).value.trim();
+  if (!txt || !opts) { alert('Question and options required'); return; }
+  const q = { id: Math.floor(Date.now()/1000) % 1000000, questionText: txt, options: opts.split(',').map(o=>o.trim()).filter(Boolean), answers: [] };
+  const res = await fetch(`${API}/api/Polls/${pollId}/question?eventId=${eventId}`, { method:'POST', headers:H, body:JSON.stringify(q) });
+  if (res.ok) loadPolls();
+  else { const d = await res.json(); alert(d.error || 'Failed'); }
+}
+
+// ── Finance ───────────────────────────────────────────────────────────────────
+async function loadFinance() {
+  const res = await fetch(`${API}/api/Financial/event/${eventId}/summary`, { headers: H });
+  if (!res.ok) { document.getElementById('financeSummary').innerHTML = '<div class="empty">Could not load data.</div>'; return; }
+  const d = await res.json();
+  const bal = d.balance ?? 0;
+  document.getElementById('financeSummary').innerHTML = `
+    <h3>💰 Financial Summary</h3>
+    <div class="summary-grid">
+      <div class="summary-box" style="background:#c6f6d5">
+        <div style="font-size:1.5rem;font-weight:800" class="green">₪${d.totalIn??0}</div>
+        <div class="green" style="font-size:.82rem">Total In</div>
+      </div>
+      <div class="summary-box" style="background:#fed7d7">
+        <div style="font-size:1.5rem;font-weight:800" class="red">₪${d.totalOut??0}</div>
+        <div class="red" style="font-size:.82rem">Total Out</div>
+      </div>
+      <div class="summary-box" style="background:${bal>=0?'#ebf8ff':'#fff5f5'}">
+        <div style="font-size:1.5rem;font-weight:800;color:${bal>=0?'#2b6cb0':'#c53030'}">₪${bal}</div>
+        <div style="color:#888;font-size:.82rem">Balance</div>
+      </div>
+    </div>
+    <h3 style="margin:14px 0 10px">Vendors</h3>
+    <table>
+      <thead><tr><th>Name</th><th>Amount Owed</th><th>Receipt</th><th></th></tr></thead>
+      <tbody>${(d.vendors||[]).map(v=>`
+        <tr>
+          <td>${v.name}</td><td>₪${v.amountOwed}</td>
+          <td>${v.hasReceipt?'✅':'❌'}</td>
+          <td><button class="btn btn-primary btn-sm" onclick="addDebt(${v.id})">+ Debt</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function addVendor() {
+  const id  = parseInt(document.getElementById('vId').value);
+  const nm  = document.getElementById('vName').value.trim();
+  const amt = parseFloat(document.getElementById('vAmount').value);
+  const err = document.getElementById('vendorErr');
+  if (!id || !nm || isNaN(amt) || amt <= 0) { err.textContent = 'All fields required and amount must be positive'; return; }
+  err.textContent = '';
+  const res = await fetch(`${API}/api/Financial/event/${eventId}/vendor`, { method:'POST', headers:H, body:JSON.stringify({id,name:nm,amountOwed:amt,hasReceipt:false,receipts:[]}) });
+  if (res.ok) { ['vId','vName','vAmount'].forEach(i=>document.getElementById(i).value=''); loadFinance(); }
+  else { const d = await res.json(); err.textContent = d.error||'Failed'; }
+}
+
+async function addDebt(vendorId) {
+  const amt = prompt('Additional debt amount (₪):');
+  if (!amt || isNaN(amt)) return;
+  const res = await fetch(`${API}/api/Financial/vendor/${vendorId}/debt?amount=${amt}&eventId=${eventId}`, { method:'PUT', headers:H });
+  if (res.ok) loadFinance();
+  else { const d = await res.json(); alert(d.error||'Failed'); }
+}
+
+init();
+</script>
+</body>
+</html>

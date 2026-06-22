@@ -17,6 +17,9 @@ namespace GatherUp.BL.Services
 
         public void CreateEvent(Event newEvent)
         {
+            var all = _events.GetAll();
+            if (newEvent.Id == 0 || all.Any(e => e.Id == newEvent.Id))
+                newEvent.Id = all.Any() ? all.Max(e => e.Id) + 1 : 1;
             _events.Add(newEvent);
         }
 
@@ -33,16 +36,16 @@ namespace GatherUp.BL.Services
             _notifier.RaiseEventUpdated(updatedEvent.Id);
         }
 
-        public Dictionary<Event, UserRole> GetAllEventsForUser(int userId)
+        public IEnumerable<object> GetAllEventsForUser(int userId)
         {
             return _events.GetAll()
                 .Where(e => e.ManagerId == userId || e.HostId == userId || e.ParticipantIds.Contains(userId))
-                .ToDictionary(
-                    e => e,
-                    e => e.ManagerId == userId ? UserRole.Manager :
-                         e.HostId == userId ? UserRole.Host :
-                         UserRole.Participant
-                );
+                .Select(e =>
+                {
+                    string role = e.ManagerId == userId ? "Manager" :
+                                  e.HostId    == userId ? "Host"    : "Participant";
+                    return (object)new { Event = e, Role = role };
+                });
         }
     }
 }

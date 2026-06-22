@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfEventManager xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <EventManager Id="1">
+    <Name>Tiferet Aaroni</Name>
+    <Email>t7187325@gmail.com</Email>
+    <PasswordId>123456789</PasswordId>
+  </EventManager>
+  <EventManager Id="5">
+    <Name>Rivka Cohen</Name>
+    <Email>rivka.cohen@gmail.com</Email>
+    <PasswordId>555555555</PasswordId>
+  </EventManager>
+</ArrayOfEventManager>

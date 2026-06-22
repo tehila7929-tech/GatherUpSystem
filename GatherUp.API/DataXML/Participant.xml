@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfParticipant xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Participant Id="3">
+    <Name>Avi Levi</Name>
+    <Email>avi@gmail.com</Email>
+    <PasswordId>111111111</PasswordId>
+    <IsAttending>true</IsAttending>
+    <HasPaid>true</HasPaid>
+    <AmountContributed>150</AmountContributed>
+    <ContactPreference>Email</ContactPreference>
+  </Participant>
+  <Participant Id="4">
+    <Name>Sara Rivka</Name>
+    <Email>sara@gmail.com</Email>
+    <PasswordId>222222222</PasswordId>
+    <IsAttending xsi:nil="true" />
+    <HasPaid>false</HasPaid>
+    <AmountContributed>0</AmountContributed>
+    <ContactPreference>None</ContactPreference>
+  </Participant>
+  <Participant Id="10">
+    <Name>Tiferet Aaroni</Name>
+    <Email>t7187325@gmail.com</Email>
+    <PasswordId>123456789</PasswordId>
+    <IsAttending>true</IsAttending>
+    <HasPaid>true</HasPaid>
+    <AmountContributed>200</AmountContributed>
+    <ContactPreference>Email</ContactPreference>
+  </Participant>
+  <Participant Id="11">
+    <Name>Rivka Cohen</Name>
+    <Email>rivka.cohen@gmail.com</Email>
+    <PasswordId>555555555</PasswordId>
+    <IsAttending>true</IsAttending>
+    <HasPaid>false</HasPaid>
+    <AmountContributed>0</AmountContributed>
+    <ContactPreference>Email</ContactPreference>
+  </Participant>
+  <Participant Id="6">
+    <Name>Yossi Mizrahi</Name>
+    <Email>yossi@gmail.com</Email>
+    <PasswordId>666666666</PasswordId>
+    <IsAttending xsi:nil="true" />
+    <HasPaid>false</HasPaid>
+    <AmountContributed>0</AmountContributed>
+    <ContactPreference>Email</ContactPreference>
+  </Participant>
+  <Participant Id="12">
+    <Name>chana</Name>
+    <Email>chana8492@gmail.com</Email>
+    <PasswordId>369258492</PasswordId>
+    <IsAttending xsi:nil="true" />
+    <HasPaid>false</HasPaid>
+    <AmountContributed>0</AmountContributed>
+    <ContactPreference>None</ContactPreference>
+  </Participant>
+</ArrayOfParticipant>

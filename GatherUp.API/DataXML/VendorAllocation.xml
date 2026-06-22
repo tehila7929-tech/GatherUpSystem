@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfVendorAllocation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <VendorAllocation Id="1">
+    <Name>Quality Catering</Name>
+    <AmountOwed>4500</AmountOwed>
+    <HasReceipt>false</HasReceipt>
+  </VendorAllocation>
+  <VendorAllocation Id="2">
+    <Name>Event Photographer</Name>
+    <AmountOwed>2000</AmountOwed>
+    <HasReceipt>false</HasReceipt>
+  </VendorAllocation>
+</ArrayOfVendorAllocation>

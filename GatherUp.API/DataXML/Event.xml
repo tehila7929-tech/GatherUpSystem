@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Event Id="1">
+    <Name>GatherUp Opening Celebration</Name>
+    <Description>A festive group gathering for the whole team.</Description>
+    <Location>Tel Aviv</Location>
+    <HostId>2</HostId>
+    <ManagerId>1</ManagerId>
+    <ParticipantIds>
+      <int>3</int>
+      <int>4</int>
+      <int>11</int>
+    </ParticipantIds>
+    <VendorIds>
+      <int>1</int>
+    </VendorIds>
+    <PollIds>
+      <int>1</int>
+      <int>2</int>
+    </PollIds>
+  </Event>
+  <Event Id="2">
+    <Name>Team End-of-Year Party</Name>
+    <Description>An end-of-year celebration for the whole class.</Description>
+    <Location>Jerusalem</Location>
+    <HostId>2</HostId>
+    <ManagerId>5</ManagerId>
+    <ParticipantIds>
+      <int>6</int>
+      <int>10</int>
+    </ParticipantIds>
+    <VendorIds>
+      <int>2</int>
+    </VendorIds>
+    <PollIds>
+      <int>3</int>
+      <int>4</int>
+    </PollIds>
+  </Event>
+</ArrayOfEvent>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfPoll xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Poll Id="1">
+    <Name>Initial Details Poll</Name>
+    <Description>Choose preferred date and location for Event 1</Description>
+    <Questions>
+      <PollQuestion Id="1">
+        <QuestionText>Which date do you prefer?</QuestionText>
+        <Options>
+          <string>June 1</string>
+          <string>June 15</string>
+          <string>June 29</string>
+        </Options>
+        <Answers>
+          <PollAnswer ParticipantId="3">
+            <Answer>June 15</Answer>
+          </PollAnswer>
+        </Answers>
+      </PollQuestion>
+      <PollQuestion Id="2">
+        <QuestionText>Which location do you prefer?</QuestionText>
+        <Options>
+          <string>Jerusalem</string>
+          <string>Tel Aviv</string>
+          <string>Haifa</string>
+        </Options>
+        <Answers>
+          <PollAnswer ParticipantId="3">
+            <Answer>Tel Aviv</Answer>
+          </PollAnswer>
+        </Answers>
+      </PollQuestion>
+    </Questions>
+  </Poll>
+  <Poll Id="2">
+    <Name>Food Preferences Poll</Name>
+    <Description>Choose the menu style for Event 1</Description>
+    <Questions>
+      <PollQuestion Id="3">
+        <QuestionText>Which main course do you prefer?</QuestionText>
+        <Options>
+          <string>Meat</string>
+          <string>Fish</string>
+          <string>Vegetarian</string>
+        </Options>
+        <Answers />
+      </PollQuestion>
+    </Questions>
+  </Poll>
+  <Poll Id="3">
+    <Name>Event 2 – Venue Poll</Name>
+    <Description>Choose the venue for the team gathering</Description>
+    <Questions>
+      <PollQuestion Id="4">
+        <QuestionText>Indoor or outdoor?</QuestionText>
+        <Options>
+          <string>Indoor hall</string>
+          <string>Open garden</string>
+          <string>Rooftop</string>
+        </Options>
+        <Answers>
+          <PollAnswer ParticipantId="10">
+            <Answer>Open garden</Answer>
+          </PollAnswer>
+        </Answers>
+      </PollQuestion>
+    </Questions>
+  </Poll>
+  <Poll Id="4">
+    <Name>Event 2 – Activity Poll</Name>
+    <Description>Choose the main activity for the evening</Description>
+    <Questions>
+      <PollQuestion Id="5">
+        <QuestionText>What activity do you prefer?</QuestionText>
+        <Options>
+          <string>Escape room</string>
+          <string>Bowling</string>
+          <string>Karaoke</string>
+        </Options>
+        <Answers>
+          <PollAnswer ParticipantId="10">
+            <Answer>Karaoke</Answer>
+          </PollAnswer>
+        </Answers>
+      </PollQuestion>
+    </Questions>
+  </Poll>
+</ArrayOfPoll>

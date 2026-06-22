@@ -20,6 +20,8 @@ namespace GatherUp.BL.Services
         public void AddVendor(VendorAllocation vendor, int eventId)
         {
             var ev = _events.GetById(eventId) ?? throw new NotFoundException("Event not found.");
+            if (_vendors.GetAll().Any(v => v.Id == vendor.Id))
+                throw new AlreadyExistsException("Vendor with this ID already exists.");
             _vendors.Add(vendor);
             ev.VendorIds.Add(vendor.Id);
             _events.Update(ev);
@@ -27,8 +29,17 @@ namespace GatherUp.BL.Services
 
         public void AddVendorDebt(int vendorId, decimal amount)
         {
+            if (amount <= 0) throw new InvalidInputException("Amount must be positive.");
             var vendor = _vendors.GetById(vendorId) ?? throw new NotFoundException("Vendor not found.");
             vendor.AmountOwed += amount;
+            _vendors.Update(vendor);
+        }
+
+        public void AttachReceiptToVendor(int vendorId, ReceiptDetails receipt)
+        {
+            var vendor = _vendors.GetById(vendorId) ?? throw new NotFoundException("Vendor not found.");
+            vendor.Receipts.Add(receipt);
+            vendor.HasReceipt = true;
             _vendors.Update(vendor);
         }
 

@@ -15,7 +15,7 @@ namespace GatherUp.Core.DO
     {
         [XmlAttribute]
         public int Id { get; set; }
-        public string QuestionText { get; set; }
+        public string QuestionText { get; set; } = string.Empty;
         public List<string> Options { get; set; } = new();
 
         // ParticipantId -> Answer, מומש כרשימה לצורך XML, מאפשר שינוי בחירה ומונע כפילויות

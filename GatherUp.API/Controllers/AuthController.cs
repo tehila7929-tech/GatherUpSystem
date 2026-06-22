@@ -27,9 +27,8 @@ namespace GatherUp.API.Controllers
         public IActionResult Login([FromBody] LoginRequest req)
         {
             var user = _auth.Login(req.Email, req.PasswordId);
-            string role = user is EventManager ? "Manager" : user is EventHost ? "Host" : "Participant";
-            var token = _jwt.GenerateToken(user, role);
-            return Ok(new { token, role, userId = user.Id, name = user.Name });
+            var token = _jwt.GenerateToken(user);
+            return Ok(new { token, userId = user.Id, name = user.Name });
         }
 
         [AllowAnonymous]

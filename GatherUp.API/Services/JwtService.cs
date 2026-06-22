@@ -12,7 +12,7 @@ namespace GatherUp.API.Services
 
         public JwtService(IConfiguration config) => _config = config;
 
-        public string GenerateToken(Person user, string role)
+        public string GenerateToken(Person user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -21,8 +21,7 @@ namespace GatherUp.API.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
             var token = new JwtSecurityToken(

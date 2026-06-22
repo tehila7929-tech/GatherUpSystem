@@ -33,7 +33,7 @@ namespace GatherUp.Infrastructure.XML
             SaveAll(items);
         }
 
-        public T GetById(int id)
+        public T? GetById(int id)
         {
             return LoadAll().FirstOrDefault(x => x.Id == id);
         }

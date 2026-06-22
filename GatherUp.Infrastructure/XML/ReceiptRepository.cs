@@ -42,10 +42,10 @@ namespace GatherUp.Infrastructure.XML
             doc.Save(_receiptsXmlPath);
         }
 
-        public ReceiptDetails GetReceiptByNumber(string receiptNumber)
+        public ReceiptDetails? GetReceiptByNumber(string receiptNumber)
         {
             XDocument doc = XDocument.Load(_receiptsXmlPath);
-            XElement element = doc.Root!.Elements("Receipt")
+            XElement? element = doc.Root!.Elements("Receipt")
                 .FirstOrDefault(x => x.Attribute("ReceiptNumber")?.Value == receiptNumber);
 
             if (element == null) return null;
@@ -57,7 +57,7 @@ namespace GatherUp.Infrastructure.XML
             );
         }
 
-        public string GetUploadedFilePath(string receiptNumber)
+        public string? GetUploadedFilePath(string receiptNumber)
         {
             XDocument doc = XDocument.Load(_receiptsXmlPath);
             return doc.Root!.Elements("Receipt")

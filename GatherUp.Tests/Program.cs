@@ -50,14 +50,16 @@ namespace GatherUp.Tests
             IEmailService emailService = new EmailService(xmlFolder);
             IEventNotifier notifier = new EventNotifier();
 
+            IRepository<EventManager> managerRepo2 = new XmlRepository<EventManager>(xmlFolder);
+
             // Inject dependencies into BL services
-            var participantService = new ParticipantService(participantRepo, eventRepo, notifier);
+            var participantService = new ParticipantService(participantRepo, eventRepo, notifier, emailService);
             var financeService = new FinanceService(vendorRepo, participantRepo, eventRepo);
             var pollService = new PollService(pollRepo, eventRepo, notifier);
             var eventService = new EventService(eventRepo, notifier);
 
-            // Register notification listener
-            var notifications = new NotificationSubscription(notifier, participantRepo, emailService);
+            // Register notification listener (must be created to hook into events)
+            var notifications = new NotificationSubscription(notifier, participantRepo, managerRepo2, emailService);
 
             // === Simulation: Main screen — click 'Create New Event' ===
             Console.WriteLine("\n[Main Screen] Clicked 'Create New Event'");
@@ -169,7 +171,7 @@ namespace GatherUp.Tests
             var checkReceipt = receiptRepo.GetReceiptByNumber("REC-998811");
             if (checkReceipt != null)
             {
-                string uploadedPath = receiptRepo.GetUploadedFilePath("REC-998811");
+                string? uploadedPath = receiptRepo.GetUploadedFilePath("REC-998811");
                 Console.WriteLine($"[V] Receipt {checkReceipt.ReceiptNumber} for {checkReceipt.Amount}. File: {uploadedPath}");
             }
         }

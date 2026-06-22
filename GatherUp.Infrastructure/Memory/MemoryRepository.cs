@@ -18,7 +18,7 @@ namespace GatherUp.Infrastructure.Memory
             _dataContext.Add(entity);
         }
 
-        public T GetById(int id)
+        public T? GetById(int id)
         {
             return _dataContext.FirstOrDefault(x => x.Id == id);
         }

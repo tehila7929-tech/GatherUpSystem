@@ -1,11 +1,5 @@
-﻿using GatherUp.Core.DO;
+using GatherUp.Core.DO;
 using GatherUp.Core.Interfaces;
-using GatherUp.Infrastructure.Memory; 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GatherUp.Infrastructure.Data
 {
@@ -19,22 +13,21 @@ namespace GatherUp.Infrastructure.Data
             IRepository<VendorAllocation> vendorRepo,
             IRepository<Poll> pollRepo)
         {
-            managerRepo.Add(SeedData.Manager);
+            managerRepo.Add(SeedData.Manager1);
+            managerRepo.Add(SeedData.Manager2);
             hostRepo.Add(SeedData.Host);
 
             foreach (var participant in SeedData.Participants)
-            {
                 participantRepo.Add(participant);
-            }
 
-            vendorRepo.Add(SeedData.Vendor);
+            foreach (var vendor in SeedData.Vendors)
+                vendorRepo.Add(vendor);
 
             foreach (var poll in SeedData.Polls)
-            {
                 pollRepo.Add(poll);
-            }
 
-            eventRepo.Add(SeedData.Event);
+            foreach (var ev in SeedData.Events)
+                eventRepo.Add(ev);
         }
     }
 }
