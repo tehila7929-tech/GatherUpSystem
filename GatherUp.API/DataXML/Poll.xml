@@ -15,6 +15,9 @@
           <PollAnswer ParticipantId="3">
             <Answer>June 15</Answer>
           </PollAnswer>
+          <PollAnswer ParticipantId="11">
+            <Answer>June 15</Answer>
+          </PollAnswer>
         </Answers>
       </PollQuestion>
       <PollQuestion Id="2">
@@ -43,7 +46,11 @@
           <string>Fish</string>
           <string>Vegetarian</string>
         </Options>
-        <Answers />
+        <Answers>
+          <PollAnswer ParticipantId="11">
+            <Answer>Fish</Answer>
+          </PollAnswer>
+        </Answers>
       </PollQuestion>
     </Questions>
   </Poll>

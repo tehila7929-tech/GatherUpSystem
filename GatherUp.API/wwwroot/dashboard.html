@@ -62,7 +62,7 @@
     <div class="err" id="createErr"></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="createEvent()">Create</button>
+      <button class="btn-primary" id="createBtn" onclick="submitNewEvent()">Create</button>
     </div>
   </div>
 </div>
@@ -108,32 +108,38 @@ async function loadEvents() {
 function openModal()  { document.getElementById('modal').classList.add('open'); document.getElementById('createErr').textContent=''; }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-async function createEvent() {
+async function submitNewEvent() {
   const nameVal = document.getElementById('newName').value.trim();
   const errEl   = document.getElementById('createErr');
+  const btn     = document.getElementById('createBtn');
   if (!nameVal) { errEl.textContent = 'Event name is required.'; return; }
   errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Creating…';
 
-  // Send id=0 — server will assign a proper unique ID
   const body = {
     id:            0,
     name:          nameVal,
     description:   document.getElementById('newDesc').value.trim(),
     location:      document.getElementById('newLocation').value.trim(),
     managerId:     userId,
-    hostId:        parseInt(document.getElementById('newHostId').value) || 0,
+    hostId:        parseInt(document.getElementById('newHostId').value) || null,
     participantIds:[], vendorIds:[], pollIds:[]
   };
 
   try {
     const res = await fetch(`${API}/api/Events`, { method:'POST', headers:H, body:JSON.stringify(body) });
-    const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.error || 'Failed to create event'; return; }
+    let data = {};
+    try { data = await res.json(); } catch(_) {}
+    if (!res.ok) { errEl.textContent = data.error || `Server error (${res.status})`; return; }
     closeModal();
     ['newName','newDesc','newLocation','newHostId'].forEach(id => document.getElementById(id).value = '');
     loadEvents();
   } catch(e) {
-    errEl.textContent = 'Network error. Please try again.';
+    errEl.textContent = 'Network error: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create';
   }
 }
 

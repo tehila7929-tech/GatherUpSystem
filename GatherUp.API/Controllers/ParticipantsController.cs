@@ -53,11 +53,11 @@ namespace GatherUp.API.Controllers
             return NoContent();
         }
 
-        /// <summary>Confirm payment — manager of the event only.</summary>
+        /// <summary>Confirm payment — manager of the event, or the participant themselves.</summary>
         [HttpPut("{participantId}/payment")]
         public IActionResult ConfirmPayment(int participantId, [FromQuery] decimal amount, [FromQuery] int eventId)
         {
-            if (!IsManagerOf(eventId)) return Forbid();
+            if (!IsManagerOf(eventId) && CallerId != participantId) return Forbid();
             _participants.ConfirmPayment(participantId, amount);
             return NoContent();
         }

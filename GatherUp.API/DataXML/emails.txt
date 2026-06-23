@@ -20,3 +20,53 @@
 [2026-06-22 13:47:45] TO: rivka.cohen@gmail.com | ✅ Tiferet Aaroni confirmed attendance.
 [2026-06-22 13:47:45] TO: t7187325@gmail.com | ✅ Tiferet Aaroni confirmed attendance.
 [2026-06-22 13:47:45] TO: rivka.cohen@gmail.com | ✅ Tiferet Aaroni confirmed attendance.
+[2026-06-22 20:26:57] TO: t7187325@gmail.com | ✅ Tiferet Aaroni confirmed attendance.
+[2026-06-22 20:26:57] TO: rivka.cohen@gmail.com | ✅ Tiferet Aaroni confirmed attendance.
+[2026-06-22 20:44:46] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:46] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:47] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:47] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:47] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:47] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:49] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:49] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:49] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:49] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:49] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:49] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:50] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:54] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:54] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:59] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:44:59] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:08] TO: t7187325@gmail.com | 💰 Payment of ₪15 received from Rivka Cohen.
+[2026-06-22 20:49:08] TO: rivka.cohen@gmail.com | 💰 Payment of ₪15 received from Rivka Cohen.
+[2026-06-22 20:49:25] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:25] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:32] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:32] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:33] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:33] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:33] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:33] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:34] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:34] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:34] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:34] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:34] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:34] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:35] TO: t7187325@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 20:49:35] TO: rivka.cohen@gmail.com | ✅ Rivka Cohen confirmed attendance.
+[2026-06-22 21:38:48] TO: avi@gmail.com | 📢 Event details have been updated (Event ID: 4). Check the latest info!
+[2026-06-22 21:38:48] TO: t7187325@gmail.com | 📢 Event details have been updated (Event ID: 4). Check the latest info!
+[2026-06-22 21:38:48] TO: rivka.cohen@gmail.com | 📢 Event details have been updated (Event ID: 4). Check the latest info!
+[2026-06-22 21:38:48] TO: yossi@gmail.com | 📢 Event details have been updated (Event ID: 4). Check the latest info!

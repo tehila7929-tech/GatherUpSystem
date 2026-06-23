@@ -37,4 +37,27 @@
       <int>4</int>
     </PollIds>
   </Event>
+  <Event Id="3">
+    <Name>party!</Name>
+    <Description>fan🎊🎉🥳</Description>
+    <Location>🏠</Location>
+    <HostId>987654321</HostId>
+    <ManagerId>10</ManagerId>
+    <ParticipantIds>
+      <int>987654321</int>
+      <int>555555555</int>
+    </ParticipantIds>
+    <VendorIds />
+    <PollIds />
+  </Event>
+  <Event Id="4">
+    <Name>we going to Beach!!</Name>
+    <Description>after C#. it will be fun!!</Description>
+    <Location>Ashdod</Location>
+    <HostId>123456789</HostId>
+    <ManagerId>11</ManagerId>
+    <ParticipantIds />
+    <VendorIds />
+    <PollIds />
+  </Event>
 </ArrayOfEvent>

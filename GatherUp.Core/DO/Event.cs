@@ -12,7 +12,7 @@ namespace GatherUp.Core.DO
         public string Description { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
 
-        public int HostId { get; set; }
+        public int? HostId { get; set; }
         public int ManagerId { get; set; }
 
         public List<int> ParticipantIds { get; set; } = new();

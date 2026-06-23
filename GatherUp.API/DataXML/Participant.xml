@@ -32,8 +32,8 @@
     <Email>rivka.cohen@gmail.com</Email>
     <PasswordId>555555555</PasswordId>
     <IsAttending>true</IsAttending>
-    <HasPaid>false</HasPaid>
-    <AmountContributed>0</AmountContributed>
+    <HasPaid>true</HasPaid>
+    <AmountContributed>15</AmountContributed>
     <ContactPreference>Email</ContactPreference>
   </Participant>
   <Participant Id="6">
@@ -49,6 +49,24 @@
     <Name>chana</Name>
     <Email>chana8492@gmail.com</Email>
     <PasswordId>369258492</PasswordId>
+    <IsAttending xsi:nil="true" />
+    <HasPaid>false</HasPaid>
+    <AmountContributed>0</AmountContributed>
+    <ContactPreference>None</ContactPreference>
+  </Participant>
+  <Participant Id="987654321">
+    <Name>tehila</Name>
+    <Email>tehila7929@gmail.com</Email>
+    <PasswordId>987654321</PasswordId>
+    <IsAttending xsi:nil="true" />
+    <HasPaid>false</HasPaid>
+    <AmountContributed>0</AmountContributed>
+    <ContactPreference>None</ContactPreference>
+  </Participant>
+  <Participant Id="555555555">
+    <Name>rivka</Name>
+    <Email>rivka.cohen@gmail.com</Email>
+    <PasswordId>555555555</PasswordId>
     <IsAttending xsi:nil="true" />
     <HasPaid>false</HasPaid>
     <AmountContributed>0</AmountContributed>

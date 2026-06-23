@@ -257,6 +257,8 @@ async function loadParticipants() {
               :                          '⏳ Pending';
     const action = role === 'Manager' && !p.hasPaid
       ? `<button class="btn btn-success btn-sm" onclick="markPaid(${p.id})">Mark Paid</button>`
+      : role === 'Participant' && p.id === userId && !p.hasPaid
+      ? `<button class="btn btn-primary btn-sm" onclick="selfPay(${p.id})">💳 Pay</button>`
       : '';
     return `<tr>
       <td>${p.name}</td>
@@ -278,6 +280,14 @@ async function confirmAttendance(val) {
 async function markPaid(pId) {
   const amt = prompt('Amount paid (₪):');
   if (!amt || isNaN(amt)) return;
+  const res = await fetch(`${API}/api/Participants/${pId}/payment?amount=${amt}&eventId=${eventId}`, { method:'PUT', headers:H });
+  if (res.ok) loadParticipants();
+  else { const d = await res.json(); alert(d.error || 'Failed'); }
+}
+
+async function selfPay(pId) {
+  const amt = prompt('Enter amount you paid (₪):');
+  if (!amt || isNaN(amt) || parseFloat(amt) <= 0) return;
   const res = await fetch(`${API}/api/Participants/${pId}/payment?amount=${amt}&eventId=${eventId}`, { method:'PUT', headers:H });
   if (res.ok) loadParticipants();
   else { const d = await res.json(); alert(d.error || 'Failed'); }
@@ -315,18 +325,15 @@ async function sendReminders() {
 
 // ── Polls ─────────────────────────────────────────────────────────────────────
 async function loadPolls() {
-  const evRes = await fetch(`${API}/api/Events/${eventId}`, { headers: H });
-  if (!evRes.ok) return;
-  const ev  = await evRes.json();
   const box = document.getElementById('pollsList');
   box.innerHTML = '';
 
-  if (!ev.pollIds || ev.pollIds.length === 0) {
+  if (!currentEvent.pollIds || currentEvent.pollIds.length === 0) {
     box.innerHTML = '<div class="card"><div class="empty">No polls yet.</div></div>';
     return;
   }
 
-  for (const pid of ev.pollIds) {
+  for (const pid of currentEvent.pollIds) {
     const pr = await fetch(`${API}/api/Polls/${pid}/results`, { headers: H });
     if (!pr.ok) continue;
     const { poll, results } = await pr.json();
@@ -339,16 +346,14 @@ async function loadPolls() {
       html += `<div style="margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f5f5f5">
         <strong style="font-size:.9rem">${q.questionText}</strong>`;
 
-      // Results bars — visible to all
       for (const opt of q.options) {
-        const pct = results[q.id]?.[opt] ?? 0;
+        const pct = results[String(q.id)]?.[opt] ?? 0;
         html += `<div style="margin-top:7px;font-size:.82rem">
           ${opt} — <strong>${pct}%</strong>
           <div class="poll-bar"><div class="poll-bar-fill" style="width:${pct}%"></div></div>
         </div>`;
       }
 
-      // Vote buttons — Participants only
       if (role === 'Participant') {
         html += `<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
           <span style="font-size:.78rem;color:#888;align-self:center">Your vote:</span>`;
@@ -359,19 +364,19 @@ async function loadPolls() {
         html += `</div>`;
       }
 
-      // Add question — Manager only
-      if (role === 'Manager') {
-        html += `<div style="margin-top:10px">
-          <button class="btn btn-sm" style="background:#f0f0f0;color:#555" onclick="toggle('aq${poll.id}_${q.id}')">➕ Add Question to Poll</button>
-          <div id="aq${poll.id}_${q.id}" style="display:none;margin-top:8px">
-            <div class="form-group"><label>Question</label><input type="text" id="qt${poll.id}"/></div>
-            <div class="form-group"><label>Options (comma separated)</label><input type="text" id="qo${poll.id}" placeholder="Option A, Option B"/></div>
-            <button class="btn btn-primary btn-sm" onclick="addQuestion(${poll.id})">Add</button>
-          </div>
-        </div>`;
-      }
-
       html += `</div>`;
+    }
+
+    // Add Question form — once per poll, outside the questions loop
+    if (role === 'Manager') {
+      html += `<div style="margin-top:10px;border-top:1px solid #f0f0f0;padding-top:10px">
+        <button class="btn btn-sm" style="background:#f0f0f0;color:#555" onclick="toggle('aq${poll.id}')">➕ Add Question</button>
+        <div id="aq${poll.id}" style="display:none;margin-top:8px">
+          <div class="form-group"><label>Question</label><input type="text" id="qt${poll.id}"/></div>
+          <div class="form-group"><label>Options (comma separated)</label><input type="text" id="qo${poll.id}" placeholder="Option A, Option B"/></div>
+          <button class="btn btn-primary btn-sm" onclick="addQuestion(${poll.id})">Add</button>
+        </div>
+      </div>`;
     }
 
     html += `</div>`;
@@ -395,6 +400,8 @@ async function createPoll() {
   const poll = { id: Math.floor(Date.now()/1000) % 1000000, name: nm, description: document.getElementById('pollDesc').value.trim(), questions: [] };
   const res = await fetch(`${API}/api/Polls/event/${eventId}`, { method:'POST', headers:H, body:JSON.stringify(poll) });
   if (res.ok) {
+    const created = await res.json();
+    currentEvent.pollIds = [...(currentEvent.pollIds || []), created.id];
     document.getElementById('pollName').value = '';
     document.getElementById('pollDesc').value = '';
     loadPolls();

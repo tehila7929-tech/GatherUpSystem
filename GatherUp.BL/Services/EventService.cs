@@ -36,14 +36,14 @@ namespace GatherUp.BL.Services
             _notifier.RaiseEventUpdated(updatedEvent.Id);
         }
 
-        public IEnumerable<object> GetAllEventsForUser(int userId)
+        public IEnumerable<object> GetAllEventsForUser(HashSet<int> ids)
         {
             return _events.GetAll()
-                .Where(e => e.ManagerId == userId || e.HostId == userId || e.ParticipantIds.Contains(userId))
+                .Where(e => ids.Contains(e.ManagerId) || (e.HostId.HasValue && ids.Contains(e.HostId.Value)) || e.ParticipantIds.Any(ids.Contains))
                 .Select(e =>
                 {
-                    string role = e.ManagerId == userId ? "Manager" :
-                                  e.HostId    == userId ? "Host"    : "Participant";
+                    string role = ids.Contains(e.ManagerId)                              ? "Manager" :
+                                  e.HostId.HasValue && ids.Contains(e.HostId.Value)      ? "Host"    : "Participant";
                     return (object)new { Event = e, Role = role };
                 });
         }
