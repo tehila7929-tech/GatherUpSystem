@@ -3,7 +3,6 @@ using System.Xml.Serialization;
 
 namespace GatherUp.Core.DO
 {
-    // עזר לסריאליזציה של Dictionary ל-XML
     public class PollAnswer
     {
         [XmlAttribute]
@@ -18,7 +17,6 @@ namespace GatherUp.Core.DO
         public string QuestionText { get; set; } = string.Empty;
         public List<string> Options { get; set; } = new();
 
-        // ParticipantId -> Answer, מומש כרשימה לצורך XML, מאפשר שינוי בחירה ומונע כפילויות
         public List<PollAnswer> Answers { get; set; } = new();
 
         public void SetAnswer(int participantId, string answer)

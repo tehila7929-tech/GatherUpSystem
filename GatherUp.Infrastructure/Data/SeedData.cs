@@ -2,18 +2,6 @@ using GatherUp.Core.DO;
 
 namespace GatherUp.Infrastructure.Data
 {
-    /// <summary>
-    /// Static seed data for initial system state.
-    /// Note: use real email addresses before submission.
-    ///
-    /// User roles per event:
-    ///   Tiferet (Id=1) - Manager of Event 1, Participant in Event 2
-    ///   Rivka   (Id=5) - Manager of Event 2, Participant in Event 1
-    ///   Tehila  (Id=2) - Host of both events
-    ///   Avi     (Id=3) - Participant in Event 1
-    ///   Sara    (Id=4) - Participant in Event 1
-    ///   Yossi   (Id=6) - Participant in Event 2
-    /// </summary>
     public static class SeedData
     {
         public static EventManager Manager1 => new EventManager
@@ -64,7 +52,6 @@ namespace GatherUp.Infrastructure.Data
                 AmountContributed = 0,
                 ContactPreference = ContactPreference.None
             },
-            // Tiferet is Manager of Event1 but also a Participant in Event2
             new Participant
             {
                 Id = 10,
@@ -76,7 +63,6 @@ namespace GatherUp.Infrastructure.Data
                 AmountContributed = 200,
                 ContactPreference = ContactPreference.Email
             },
-            // Rivka is Manager of Event2 but also a Participant in Event1
             new Participant
             {
                 Id = 11,
@@ -123,7 +109,6 @@ namespace GatherUp.Infrastructure.Data
 
         public static List<Poll> Polls => new List<Poll>
         {
-            // Event 1 polls
             new Poll
             {
                 Id = 1,
@@ -169,7 +154,6 @@ namespace GatherUp.Infrastructure.Data
                     }
                 }
             },
-            // Event 2 polls
             new Poll
             {
                 Id = 3,
@@ -215,9 +199,9 @@ namespace GatherUp.Infrastructure.Data
                 Name = "GatherUp Opening Celebration",
                 Description = "A festive group gathering for the whole team.",
                 Location = "Tel Aviv",
-                ManagerId = 1,   // Tiferet is manager
-                HostId = 2,      // Tehila is host
-                ParticipantIds = new List<int> { 3, 4, 11 },  // Avi, Sara, Rivka(participant)
+                ManagerId = 1,
+                HostId = 2,
+                ParticipantIds = new List<int> { 3, 4, 11 },
                 VendorIds = new List<int> { 1 },
                 PollIds = new List<int> { 1, 2 }
             },
@@ -227,9 +211,9 @@ namespace GatherUp.Infrastructure.Data
                 Name = "Team End-of-Year Party",
                 Description = "An end-of-year celebration for the whole class.",
                 Location = "Jerusalem",
-                ManagerId = 5,   // Rivka is manager
-                HostId = 2,      // Tehila is host
-                ParticipantIds = new List<int> { 6, 10 },  // Yossi, Tiferet(participant)
+                ManagerId = 5,
+                HostId = 2,
+                ParticipantIds = new List<int> { 6, 10 },
                 VendorIds = new List<int> { 2 },
                 PollIds = new List<int> { 3, 4 }
             }

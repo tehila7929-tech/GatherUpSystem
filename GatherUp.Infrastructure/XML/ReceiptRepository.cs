@@ -66,9 +66,9 @@ namespace GatherUp.Infrastructure.XML
         }
 
         public void UpdateReceipt(ReceiptDetails receipt) =>
-            throw new InvalidOperationException("לא ניתן לערוך קבלה לאחר היצירה.");
+            throw new InvalidOperationException("A receipt cannot be edited after creation.");
 
         public void DeleteReceipt(string receiptNumber) =>
-            throw new InvalidOperationException("לא ניתן למחוק קבלה לאחר היצירה.");
+            throw new InvalidOperationException("A receipt cannot be deleted after creation.");
     }
 }
